@@ -4,3 +4,7 @@ export * from "./hit-detection.js";
 export * from "./moves.js";
 export * from "./runtime.js";
 export * from "./match-step.js";
+export * from "./advantage.js";
+export * from "./cancels.js";
+export * from "./combo.js";
+export * from "./combat-match.js";
