@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Forged Fighter Visual Asset Manifest",
+  "type": "object",
+  "required": [
+    "id",
+    "version",
+    "sprite",
+    "animations"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_-]+$"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "sprite": {
+      "type": "object",
+      "required": [
+        "frameWidth",
+        "frameHeight",
+        "pivot"
+      ],
+      "properties": {
+        "frameWidth": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "frameHeight": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "pivot": {
+          "type": "object",
+          "required": [
+            "x",
+            "y"
+          ],
+          "properties": {
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            }
+          }
+        }
+      }
+    },
+    "animations": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "frames",
+          "fps",
+          "loop"
+        ],
+        "properties": {
+          "frames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          },
+          "fps": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "loop": {
+            "type": "boolean"
+          },
+          "events": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "vfx": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "anchor"
+        ],
+        "properties": {
+          "anchor": {
+            "type": "string"
+          },
+          "blendMode": {
+            "type": "string"
+          },
+          "offset": {
+            "type": "object"
+          }
+        }
+      }
+    }
+  }
+}
