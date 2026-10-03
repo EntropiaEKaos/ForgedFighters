@@ -1,0 +1,3 @@
+import{describe,expect,it}from"vitest";import{createInitialState,type FighterInput}from"@forged-fighter/core";import{stepCombatMatch}from"./match-step.js";
+const n=():FighterInput=>({left:false,right:false,up:false,down:false,light:false,medium:false,heavy:false,special:false,throw:false});
+describe("combat match step",()=>{it("runs standing light through official combat tick",()=>{let s=createInitialState();s={...s,fighters:[{...s.fighters[0],x:0},{...s.fighters[1],x:70}]};for(let i=0;i<4;i++)s=stepCombatMatch(s,[{...n(),light:i===0},n()]);expect(s.fighters[1].health).toBe(9500);expect(s.fighters[1].mode).toBe("hitstun");});});
