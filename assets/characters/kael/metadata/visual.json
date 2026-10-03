@@ -1,0 +1,77 @@
+{
+  "id": "kael",
+  "version": 1,
+  "sprite": {
+    "frameWidth": 320,
+    "frameHeight": 320,
+    "pivot": {
+      "x": 160,
+      "y": 292
+    }
+  },
+  "animations": {
+    "idle": {
+      "frames": [
+        "idle_000",
+        "idle_001",
+        "idle_002",
+        "idle_003",
+        "idle_004",
+        "idle_005",
+        "idle_006",
+        "idle_007",
+        "idle_008",
+        "idle_009"
+      ],
+      "fps": 12,
+      "loop": true,
+      "events": []
+    },
+    "walk": {
+      "frames": [
+        "walk_000",
+        "walk_001",
+        "walk_002",
+        "walk_003",
+        "walk_004",
+        "walk_005",
+        "walk_006",
+        "walk_007"
+      ],
+      "fps": 14,
+      "loop": true,
+      "events": []
+    },
+    "dash": {
+      "frames": [
+        "dash_000",
+        "dash_001",
+        "dash_002",
+        "dash_003",
+        "dash_004",
+        "dash_005"
+      ],
+      "fps": 18,
+      "loop": false,
+      "events": []
+    }
+  },
+  "vfx": {
+    "rune_charge": {
+      "anchor": "torso",
+      "blendMode": "add",
+      "offset": {
+        "x": 0,
+        "y": -90
+      }
+    },
+    "rune_strike": {
+      "anchor": "hand_r",
+      "blendMode": "add",
+      "offset": {
+        "x": 28,
+        "y": 0
+      }
+    }
+  }
+}
