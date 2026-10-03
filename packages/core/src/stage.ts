@@ -27,3 +27,16 @@ export function resolvePushboxes(a:FighterState,b:FighterState):[FighterState,Fi
     {...b,x:b.x+direction*rightShift},
   ];
 }
+
+export function resolveStagePushboxes(a:FighterState,b:FighterState,stage:StageBounds=DEFAULT_STAGE):[FighterState,FighterState]{
+ let left=clampToStage(a,stage),right=clampToStage(b,stage);
+ if(!left.grounded||!right.grounded)return[left,right];
+ const min=PUSHBOX_HALF_WIDTH*2,delta=right.x-left.x;if(Math.abs(delta)>=min)return[left,right];
+ const direction=delta>=0?1:-1;
+ if(direction<0){const solved=resolveStagePushboxes(right,left,stage);return[solved[1],solved[0]];}
+ const overlap=min-(right.x-left.x),leftRoom=left.x-(stage.left+PUSHBOX_HALF_WIDTH),rightRoom=(stage.right-PUSHBOX_HALF_WIDTH)-right.x;
+ const moveLeft=Math.min(Math.floor(overlap/2),leftRoom),moveRight=Math.min(overlap-moveLeft,rightRoom),remaining=overlap-moveLeft-moveRight;
+ const extraLeft=Math.min(remaining,leftRoom-moveLeft),extraRight=Math.min(remaining-extraLeft,rightRoom-moveRight);
+ left={...left,x:left.x-moveLeft-extraLeft};right={...right,x:right.x+moveRight+extraRight};
+ return[left,right];
+}
