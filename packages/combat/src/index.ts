@@ -10,3 +10,4 @@ export * from "./combo.js";
 export * from "./combat-match.js";
 export * from "./throws.js";
 export * from "./traditional-ruleset.js";
+export * from "./tag-ruleset.js";
