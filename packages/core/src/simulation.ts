@@ -20,7 +20,9 @@ export function stepMatch(state:MatchState,inputs:readonly[FighterInput,FighterI
  ]};
 }
 function stepFighter(f:FighterState,input:FighterInput):FighterState{
- const axis=Number(input.right)-Number(input.left);let grounded=f.grounded,vy=f.vy,y=f.y;
+ if(f.hitstopFrames>0)return f;
+ const locked=f.mode==="attack"||f.mode==="hitstun"||f.mode==="blockstun";
+ const axis=locked?0:Number(input.right)-Number(input.left);let grounded=f.grounded,vy=f.vy,y=f.y;
  if(!locked&&grounded&&input.up){grounded=false;vy=JUMP;}
  if(!grounded){vy=Math.max(vy-GRAVITY,-MAX_FALL);y+=vy;if(y<=0){y=0;vy=0;grounded=true;}}
  const vx=grounded&&input.down?0:axis*WALK;const x=f.x+vx;
