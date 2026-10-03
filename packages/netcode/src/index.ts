@@ -4,3 +4,5 @@ export * from "./snapshot-ring.js";
 export * from "./command-recognition.js";
 export * from "./command-resolver.js";
 export * from "./command-consumption.js";
+export * from "./state-codec.js";
+export * from "./generic-rollback.js";
