@@ -1,0 +1,5 @@
+import{describe,expect,it}from"vitest";import{createInitialState,type FighterInput}from"@forged-fighter/core";import{stepCombatMatch}from"./match-step.js";
+const n=():FighterInput=>({left:false,right:false,up:false,down:false,light:false,medium:false,heavy:false,special:false,throw:false});
+const close=()=>{let s=createInitialState(99);return{...s,fighters:[{...s.fighters[0],x:0},{...s.fighters[1],x:70}] as const};};
+describe("defense and hitstop",()=>{it("holding away blocks standing light without damage",()=>{let s=close();for(let i=0;i<4;i++)s=stepCombatMatch(s,[{...n(),light:i===0},{...n(),right:true}]);expect(s.fighters[1].health).toBe(10000);expect(s.fighters[1].mode).toBe("blockstun");expect(s.fighters[0].hitstopFrames).toBeGreaterThan(0);expect(s.fighters[1].hitstopFrames).toBeGreaterThan(0);});
+it("freezes attack progression during hitstop",()=>{let s=close();for(let i=0;i<4;i++)s=stepCombatMatch(s,[{...n(),light:i===0},n()]);const frame=s.fighters[0].attack?.frame,stop=s.fighters[0].hitstopFrames;s=stepCombatMatch(s,[n(),n()]);expect(s.fighters[0].attack?.frame).toBe(frame);expect(s.fighters[0].hitstopFrames).toBe(stop-1);});});
