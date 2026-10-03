@@ -1,0 +1,4 @@
+import type{PlayerId}from"@forged-fighter/core";import type{InputHistory}from"./input-history.js";import{recognizeCommandWithButton,type CommandButton,type CommandSpec}from"./command-recognition.js";
+export interface CommandBinding{id:string;motion:CommandSpec;button:CommandButton;priority:number;}
+export interface CommandResolution{binding:CommandBinding;}
+export function resolveCommand(history:InputHistory,player:PlayerId,frame:number,facing:-1|1,bindings:readonly CommandBinding[]):CommandResolution|undefined{const matches=bindings.filter(b=>recognizeCommandWithButton(history,player,frame,facing,b.motion,b.button));if(matches.length===0)return undefined;const ordered=[...matches].sort((a,b)=>b.priority-a.priority||b.motion.sequence.length-a.motion.sequence.length||a.id.localeCompare(b.id));return{binding:ordered[0]!};}
