@@ -10,6 +10,12 @@
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
     "useDefineForClassFields": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "paths": {
+      "@forged-fighter/core": ["packages/core/src/index.ts"],
+      "@forged-fighter/combat": ["packages/combat/src/index.ts"],
+      "@forged-fighter/netcode": ["packages/netcode/src/index.ts"]
+    }
   }
 }
