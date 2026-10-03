@@ -1,4 +1,4 @@
-import { DEFAULT_STAGE, clampToStage, resolvePushboxes } from "./stage.js";
+import { DEFAULT_STAGE, resolveStagePushboxes } from "./stage.js";
 import type { FighterInput, FighterState, MatchState, PlayerId } from "./types.js";
 
 const WALK=12,JUMP=42,GRAVITY=4,MAX_FALL=40;
@@ -11,9 +11,7 @@ function createFighter(playerId:PlayerId,x:number,facing:-1|1):FighterState{
 }
 export function stepMatch(state:MatchState,inputs:readonly[FighterInput,FighterInput]):MatchState{
  const stepped=state.fighters.map((fighter,index)=>stepFighter(fighter,inputs[index as PlayerId])) as [FighterState,FighterState];
- const bounded:[FighterState,FighterState]=[clampToStage(stepped[0],DEFAULT_STAGE),clampToStage(stepped[1],DEFAULT_STAGE)];
- let [a,b]=resolvePushboxes(bounded[0],bounded[1]);
- a=clampToStage(a,DEFAULT_STAGE);b=clampToStage(b,DEFAULT_STAGE);
+ const [a,b]=resolveStagePushboxes(stepped[0],stepped[1],DEFAULT_STAGE);
  return {frame:state.frame+1,seed:nextSeed(state.seed),fighters:[
   {...a,facing:a.x<=b.x?1:-1},
   {...b,facing:b.x>=a.x?-1:1},
