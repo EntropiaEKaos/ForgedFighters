@@ -1,0 +1,2 @@
+import{describe,expect,it}from"vitest";import{frameAdvantage}from"./advantage.js";import{STANDING_LIGHT}from"./moves.js";
+describe("frame advantage",()=>{it("derives hit and block advantage from deterministic frame data",()=>{const a=frameAdvantage(STANDING_LIGHT,STANDING_LIGHT.startup);expect(a.onHit).toBe(STANDING_LIGHT.hitstun-(STANDING_LIGHT.active-1+STANDING_LIGHT.recovery));expect(a.onBlock).toBe(STANDING_LIGHT.blockstun-(STANDING_LIGHT.active-1+STANDING_LIGHT.recovery));});});
