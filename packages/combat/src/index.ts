@@ -8,3 +8,4 @@ export * from "./advantage.js";
 export * from "./cancels.js";
 export * from "./combo.js";
 export * from "./combat-match.js";
+export * from "./throws.js";
