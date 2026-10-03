@@ -1,0 +1,50 @@
+{
+  "id": "kael",
+  "displayName": "Kael",
+  "title": "The Runebreaker",
+  "status": "concept-approved",
+  "archetype": "balanced",
+  "productionBenchmark": true,
+  "assetGroups": [
+    "concept",
+    "sprites",
+    "vfx",
+    "atlases",
+    "metadata"
+  ],
+  "animations": [
+    "idle",
+    "walk",
+    "dash",
+    "crouch",
+    "jump",
+    "land",
+    "light_punch",
+    "medium_punch",
+    "heavy_punch",
+    "light_kick",
+    "medium_kick",
+    "heavy_kick",
+    "block_high",
+    "block_low",
+    "hit_light",
+    "hit_heavy",
+    "knockdown",
+    "get_up",
+    "rune_strike",
+    "rune_wave",
+    "rune_uppercut",
+    "rune_grab",
+    "rune_burst",
+    "apocalypse_breaker"
+  ],
+  "vfx": [
+    "rune_charge",
+    "rune_strike",
+    "rune_wave",
+    "rune_uppercut",
+    "rune_grab",
+    "rune_burst",
+    "apocalypse_breaker"
+  ]
+}
