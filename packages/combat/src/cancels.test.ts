@@ -1,0 +1,3 @@
+import{describe,expect,it}from"vitest";import{canCancel,type CancelWindow}from"./cancels.js";
+const windows:readonly CancelWindow[]=[{from:3,to:5,targets:["special","super"],requireHit:true},{from:6,to:7,targets:["jump"]}];
+describe("cancel windows",()=>{it("requires timing, target and hit conditions",()=>{expect(canCancel(windows,"special",{frame:4,connected:true,blocked:false})).toBe(true);expect(canCancel(windows,"special",{frame:4,connected:false,blocked:false})).toBe(false);expect(canCancel(windows,"super",{frame:8,connected:true,blocked:false})).toBe(false);expect(canCancel(windows,"jump",{frame:6,connected:false,blocked:false})).toBe(true);});});
