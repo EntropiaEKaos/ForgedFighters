@@ -7,7 +7,7 @@ export function createInitialState(seed=1):MatchState{
  return {frame:0,seed:seed>>>0,fighters:[createFighter(0,-120,1),createFighter(1,120,-1)]};
 }
 function createFighter(playerId:PlayerId,x:number,facing:-1|1):FighterState{
- return {playerId,x,y:0,vx:0,vy:0,facing,health:10_000,meter:0,mode:"idle",grounded:true,stunFrames:0};
+ return {playerId,x,y:0,vx:0,vy:0,facing,health:10_000,meter:0,mode:"idle",grounded:true,stunFrames:0,hitstopFrames:0};
 }
 export function stepMatch(state:MatchState,inputs:readonly[FighterInput,FighterInput]):MatchState{
  const stepped=state.fighters.map((fighter,index)=>stepFighter(fighter,inputs[index as PlayerId])) as [FighterState,FighterState];
