@@ -5,7 +5,7 @@ function movementInput(input:FighterInput,f:FighterState,opponent:FighterState):
 export function stepCombatMatch(state:MatchState,inputs:readonly[FighterInput,FighterInput]):CombatMatchState{
  const combat=asCombatMatchState(state),frame=state.frame;
  let combos=[resetComboIfExpired(combat.combos[0],frame),resetComboIfExpired(combat.combos[1],frame)] as const;let bounceEntitlements=[{...combat.bounceEntitlements[0]},{...combat.bounceEntitlements[1]}] as [typeof combat.bounceEntitlements[0],typeof combat.bounceEntitlements[1]];let juggles=[combat.juggles[0],combat.juggles[1]] as [typeof combat.juggles[0],typeof combat.juggles[1]];let throws=[combat.throws[0],combat.throws[1]] as [typeof combat.throws[0],typeof combat.throws[1]];
- const guards=[guardInput(inputs[0],state.fighters[0].facing),guardInput(inputs[1],state.fighters[1].facing)] as const;
+ const guards=inputs;
  const frozen=state.fighters.map(f=>f.hitstopFrames>0?tickHitstop(f):f) as [FighterState,FighterState];
  const throwLockedFighters=frozen.map((fighter,index)=>isThrowLocked(throws[index as 0|1])?{...fighter,vx:0,vy:0}:fighter) as [FighterState,FighterState];
  const simState={...state,fighters:throwLockedFighters as readonly[FighterState,FighterState]};
