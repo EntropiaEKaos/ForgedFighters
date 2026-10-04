@@ -8,3 +8,6 @@ export function tickDefenseReaction(s:DefenseReactionState):DefenseReactionState
 export function absorbArmorHit(s:DefenseReactionState):DefenseReactionState{return s.kind==="armor"&&s.armorHits>0?{kind:s.armorHits===1?"none":"armor",frames:s.armorHits===1?0:s.frames,armorHits:Math.max(0,s.armorHits-1),lastResult:"armor"}:s;}
 export function resolveParry(s:DefenseReactionState):DefenseReactionState{return s.kind==="parry"?{kind:"none",frames:0,armorHits:0,lastResult:"parry"}:s;}
 export function resolveCounter(s:DefenseReactionState):DefenseReactionState{return s.kind==="counter"?{kind:"none",frames:0,armorHits:0,lastResult:"counter"}:s;}
+
+export function hasArmor(s:DefenseReactionState):boolean{return s.kind==="armor"&&s.armorHits>0;}
+export function armorDamage(s:DefenseReactionState,damage:number):number{return hasArmor(s)?0:damage;}
