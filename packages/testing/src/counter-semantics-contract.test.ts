@@ -1,0 +1,2 @@
+import{describe,expect,it}from"vitest";import{EMPTY_DEFENSE_REACTION,isCounterHitTarget}from"@forged-fighter/combat";import type{AttackContact}from"@forged-fighter/core";
+describe("Counter semantics contract",()=>{it("keeps Counter as offensive contact classification, not defense stance",()=>{const contact:AttackContact="counter";expect(contact).toBe("counter");expect(isCounterHitTarget("attack")).toBe(true);expect(isCounterHitTarget("idle")).toBe(false);expect(EMPTY_DEFENSE_REACTION.kind).toBe("none");});});
