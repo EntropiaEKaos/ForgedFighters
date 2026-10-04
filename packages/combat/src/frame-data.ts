@@ -8,6 +8,7 @@ export interface AttackFrameData {
  blockstun:number;
  hitstop:number;
  bounce?:{wall?:boolean;ground?:boolean};
+ landingKnockdownFrames?:number;
 }
 export type AttackPhase="startup"|"active"|"recovery"|"complete";
 export function totalFrames(a:AttackFrameData):number{return a.startup+a.active+a.recovery;}
