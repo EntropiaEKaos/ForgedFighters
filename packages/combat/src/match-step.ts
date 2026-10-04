@@ -24,5 +24,5 @@ export function stepCombatMatch(state:MatchState,inputs:readonly[FighterInput,Fi
  const hpA=a.health;[b,a]=resolveStandingLight(b,a,guards[0],scaledDamage(STANDING_LIGHT.damage,combos[1].hits));if(a.health<hpA)combos=[combos[0],addComboHit(combos[1],STANDING_LIGHT.damage,frame).combo];
  if(a.hitstopFrames===0&&(a.mode==="hitstun"||a.mode==="air-hitstun"||a.mode==="knockdown"||a.mode==="blockstun"))a=tickStun(a);if(b.hitstopFrames===0&&(b.mode==="hitstun"||b.mode==="air-hitstun"||b.mode==="knockdown"||b.mode==="blockstun"))b=tickStun(b);
  a=advanceAttack(a);b=advanceAttack(b);
- return{...base,fighters:[a,b] as readonly[FighterState,FighterState],combos,throws,juggles};
+ return{...base,fighters:[a,b] as readonly[FighterState,FighterState],combos,throws,juggles,bounces:combat.bounces};
 }
