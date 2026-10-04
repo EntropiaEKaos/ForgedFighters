@@ -11,3 +11,5 @@ export function resolveCounter(s:DefenseReactionState):DefenseReactionState{retu
 
 export function hasArmor(s:DefenseReactionState):boolean{return s.kind==="armor"&&s.armorHits>0;}
 export function armorDamage(s:DefenseReactionState,damage:number):number{return hasArmor(s)?0:damage;}
+
+export function isCounterHitTarget(mode:string):boolean{return mode==="attack";}
