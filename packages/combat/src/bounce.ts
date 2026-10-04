@@ -1,7 +1,7 @@
 import{DEFAULT_STAGE,PUSHBOX_HALF_WIDTH,type FighterState,type StageBounds}from"@forged-fighter/core";
 export interface BounceState{wallBounces:number;groundBounces:number;}
-export interface BounceRules{maxWallBounces:number;maxGroundBounces:number;wallVelocityX:number;wallVelocityY:number;groundVelocityY:number;airHitstun:number;}
-export const DEFAULT_BOUNCE_RULES:BounceRules={maxWallBounces:1,maxGroundBounces:1,wallVelocityX:14,wallVelocityY:18,groundVelocityY:22,airHitstun:20};
+export interface BounceRules{maxWallBounces:number;maxGroundBounces:number;wallVelocityX:number;wallVelocityY:number;groundVelocityY:number;airHitstun:number;wallJuggleCost:number;groundJuggleCost:number;}
+export const DEFAULT_BOUNCE_RULES:BounceRules={maxWallBounces:1,maxGroundBounces:1,wallVelocityX:14,wallVelocityY:18,groundVelocityY:22,airHitstun:20,wallJuggleCost:1,groundJuggleCost:1};
 export const INITIAL_BOUNCE_STATE:BounceState={wallBounces:0,groundBounces:0};
 export function canWallBounce(s:BounceState,r=DEFAULT_BOUNCE_RULES){return s.wallBounces<r.maxWallBounces;}
 export function canGroundBounce(s:BounceState,r=DEFAULT_BOUNCE_RULES){return s.groundBounces<r.maxGroundBounces;}
