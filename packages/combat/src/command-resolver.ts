@@ -1,5 +1,5 @@
 import type{FighterInput}from"@forged-fighter/core";
-export interface ResolvedCombatCommand{lockedInput:FighterInput;actionInput:FighterInput;superCommand:boolean;projectileCommand:boolean;}
+export type CombatCommandOwner="none"|"super"|"projectile";\nexport interface ResolvedCombatCommand{lockedInput:FighterInput;actionInput:FighterInput;owner:CombatCommandOwner;superCommand:boolean;projectileCommand:boolean;}
 const neutralizeLockedInput=(input:FighterInput):FighterInput=>({...input,left:false,right:false,up:false,down:false,light:false,medium:false,heavy:false,special:false});
 export function resolveCombatCommand(input:FighterInput,throwLocked:boolean):ResolvedCombatCommand{
  const lockedInput=throwLocked?neutralizeLockedInput(input):input;
