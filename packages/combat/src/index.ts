@@ -16,3 +16,4 @@ export * from "./bounce.js";
 export * from "./defense-reactions.js";
 
 export * from"./meter.js";
+export * from"./projectiles.js";
