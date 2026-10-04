@@ -30,5 +30,5 @@ export function stepCombatMatch(state:MatchState,inputs:readonly[FighterInput,Fi
  const hpA=a.health;[b,a]=resolveStandingLight(b,a,guards[0],scaledDamage(STANDING_LIGHT.damage,combos[1].hits));if(a.health<hpA)combos=[combos[0],addComboHit(combos[1],STANDING_LIGHT.damage,frame).combo];
  const preStunA=a.mode,preStunB=b.mode;if(!landedA&&a.hitstopFrames===0&&(a.mode==="hitstun"||a.mode==="air-hitstun"||a.mode==="knockdown"||a.mode==="blockstun"))a=tickStun(a);if(!landedB&&b.hitstopFrames===0&&(b.mode==="hitstun"||b.mode==="air-hitstun"||b.mode==="knockdown"||b.mode==="blockstun"))b=tickStun(b);const recoveredA=(preStunA==="hitstun"||preStunA==="knockdown")&&a.mode==="idle";const recoveredB=(preStunB==="hitstun"||preStunB==="knockdown")&&b.mode==="idle";if(recoveredA){juggles[1]={points:0,hits:0};bounces[0]={wallBounces:0,groundBounces:0};bounceEntitlements[0]={wall:false,ground:false};}if(recoveredB){juggles[0]={points:0,hits:0};bounces[1]={wallBounces:0,groundBounces:0};bounceEntitlements[1]={wall:false,ground:false};}
  a=advanceAttack(a);b=advanceAttack(b);
- return{...base,fighters:[a,b] as readonly[FighterState,FighterState],combos,throws,juggles,bounces,bounceEntitlements};
+ return{...base,fighters:[a,b] as readonly[FighterState,FighterState],combos,throws,juggles,bounces,bounceEntitlements,defenseReactions:combat.defenseReactions};
 }
