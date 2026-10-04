@@ -7,7 +7,8 @@ export function stepCombatMatch(state:MatchState,inputs:readonly[FighterInput,Fi
  let combos=[resetComboIfExpired(combat.combos[0],frame),resetComboIfExpired(combat.combos[1],frame)] as const;let throws=[combat.throws[0],combat.throws[1]] as [typeof combat.throws[0],typeof combat.throws[1]];
  const guards=[guardInput(inputs[0],state.fighters[0].facing),guardInput(inputs[1],state.fighters[1].facing)] as const;
  const frozen=state.fighters.map(f=>f.hitstopFrames>0?tickHitstop(f):f) as [FighterState,FighterState];
- const throwLockedFighters=frozen.map((fighter,index)=>isThrowLocked(throws[index as 0|1])?{...fighter,vx:0,vy:0}:fighter) as [FighterState,FighterState];\n const simState={...state,fighters:throwLockedFighters as readonly[FighterState,FighterState]};
+ const throwLockedFighters=frozen.map((fighter,index)=>isThrowLocked(throws[index as 0|1])?{...fighter,vx:0,vy:0}:fighter) as [FighterState,FighterState];
+ const simState={...state,fighters:throwLockedFighters as readonly[FighterState,FighterState]};
  const movement=[movementInput(inputs[0],simState.fighters[0],simState.fighters[1]),movementInput(inputs[1],simState.fighters[1],simState.fighters[0])] as const;
  let base=stepMatch(simState,movement),a=startLight(base.fighters[0],inputs[0]),b=startLight(base.fighters[1],inputs[1]);
  if(inputs[0].throw&&!throws[0]&&a.mode==="idle")throws[0]=beginThrow();if(inputs[1].throw&&!throws[1]&&b.mode==="idle")throws[1]=beginThrow();
