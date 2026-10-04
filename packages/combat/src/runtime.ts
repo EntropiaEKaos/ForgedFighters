@@ -5,6 +5,7 @@ function launchData(move:{hitstun:number;landingKnockdownFrames?:number},velocit
 export function startAirJuggleLight(f:FighterState,input:FighterInput):FighterState{return input.light&&!f.grounded&&(f.mode==="jump"||f.mode==="fall"||f.mode==="idle")?beginAttack(f,AIR_JUGGLE_LIGHT.id):f;}
 export function startBounceLauncher(f:FighterState,input:FighterInput):FighterState{return input.special&&f.mode==="idle"?beginAttack(f,BOUNCE_LAUNCHER.id):f;}
 export function startJuggleLight(f:FighterState,input:FighterInput,opponent:FighterState):FighterState{return input.light&&f.mode==="idle"&&opponent.mode==="air-hitstun"?beginAttack(f,JUGGLE_LIGHT.id):f;}
+export function jumpCancelLauncher(f:FighterState,input:FighterInput):FighterState{const a=f.attack;if(!input.up||!f.grounded||f.mode!=="attack"||!a||a.moveId!==STANDING_HEAVY_LAUNCHER.id||!a.hasHit)return f;const{attack:_attack,...rest}=f;return{...rest,grounded:false,vy:42,mode:"jump"};}
 export function startHeavyLauncher(f:FighterState,input:FighterInput):FighterState{return input.heavy&&f.mode==="idle"?beginAttack(f,STANDING_HEAVY_LAUNCHER.id):f;}
 export function startLight(f:FighterState,input:FighterInput):FighterState{return input.light&&f.mode==="idle"?beginAttack(f,STANDING_LIGHT.id):f;}
 export function isBlocking(defender:FighterState,input:FighterInput):boolean{return defender.grounded&&(defender.facing===1?input.left:input.right);}
