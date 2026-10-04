@@ -24,7 +24,7 @@ function stepFighter(f:FighterState,input:FighterInput):FighterState{
  if(!locked&&grounded&&input.up){grounded=false;vy=JUMP;}
  if(!grounded){vy=Math.max(vy-GRAVITY,-MAX_FALL);y+=vy;if(y<=0){y=0;vy=0;grounded=true;}}
  const vx=locked?f.vx:grounded&&input.down?0:axis*WALK;const x=f.x+vx;
- const mode=locked?f.mode:!grounded?(vy>=0?"jump":"fall"):input.down?"crouch":axis!==0?"walk":"idle";
+ const mode=f.mode==="air-hitstun"&&grounded?"knockdown":locked?f.mode:!grounded?(vy>=0?"jump":"fall"):input.down?"crouch":axis!==0?"walk":"idle";
  return {...f,x,y,vx,vy,grounded,mode};
 }
 function nextSeed(seed:number):number{let x=seed>>>0;x^=x<<13;x^=x>>>17;x^=x<<5;return x>>>0;}
