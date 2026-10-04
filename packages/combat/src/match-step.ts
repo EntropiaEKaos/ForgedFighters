@@ -20,7 +20,7 @@ export function stepCombatMatch(state:MatchState,inputs:readonly[FighterInput,Fi
  const heavyHpA=a.health;if(canJuggle(juggles[1],2)){[b,a]=resolveHeavyLauncher(b,a);if(a.health<heavyHpA){juggles[1]=applyJuggle(juggles[1],2);combos=[combos[0],addComboHit(combos[1],STANDING_HEAVY_LAUNCHER.damage,frame).combo];}}
  const hpB=b.health;[a,b]=resolveStandingLight(a,b,guards[1],scaledDamage(STANDING_LIGHT.damage,combos[0].hits));if(b.health<hpB)combos=[addComboHit(combos[0],STANDING_LIGHT.damage,frame).combo,combos[1]];
  const hpA=a.health;[b,a]=resolveStandingLight(b,a,guards[0],scaledDamage(STANDING_LIGHT.damage,combos[1].hits));if(a.health<hpA)combos=[combos[0],addComboHit(combos[1],STANDING_LIGHT.damage,frame).combo];
- if(a.hitstopFrames===0&&(a.mode==="hitstun"||a.mode==="blockstun"))a=tickStun(a);if(b.hitstopFrames===0&&(b.mode==="hitstun"||b.mode==="blockstun"))b=tickStun(b);
+ if(a.hitstopFrames===0&&(a.mode==="hitstun"||a.mode==="air-hitstun"||a.mode==="knockdown"||a.mode==="blockstun"))a=tickStun(a);if(b.hitstopFrames===0&&(b.mode==="hitstun"||b.mode==="air-hitstun"||b.mode==="knockdown"||b.mode==="blockstun"))b=tickStun(b);
  a=advanceAttack(a);b=advanceAttack(b);
  return{...base,fighters:[a,b] as readonly[FighterState,FighterState],combos,throws,juggles};
 }
