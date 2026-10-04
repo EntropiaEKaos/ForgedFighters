@@ -12,3 +12,4 @@ export * from "./throws.js";
 export * from "./traditional-ruleset.js";
 export * from "./tag-ruleset.js";
 export * from "./air-combat.js";
+export * from "./bounce.js";
