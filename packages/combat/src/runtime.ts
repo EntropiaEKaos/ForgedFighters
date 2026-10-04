@@ -1,7 +1,7 @@
 import type { FighterInput,FighterState } from "@forged-fighter/core";
 import { applyBlock,applyHit,applyHitstop,beginAttack } from "@forged-fighter/core";
 import { attackPhase } from "./frame-data.js";import { detectHit } from "./hit-detection.js";import { toWorldBox } from "./boxes.js";import { AIR_JUGGLE_LIGHT,STANDING_HEAVY_LAUNCHER,STANDING_LIGHT } from "./moves.js";import{launchFighter}from"./air-combat.js";
-export function startAirJuggleLight(f:FighterState,input:FighterInput):FighterState{return input.light&&!f.grounded&&f.mode==="idle"?beginAttack(f,AIR_JUGGLE_LIGHT.id):f;}
+export function startAirJuggleLight(f:FighterState,input:FighterInput):FighterState{return input.light&&!f.grounded&&(f.mode==="jump"||f.mode==="fall"||f.mode==="idle")?beginAttack(f,AIR_JUGGLE_LIGHT.id):f;}
 export function startHeavyLauncher(f:FighterState,input:FighterInput):FighterState{return input.heavy&&f.mode==="idle"?beginAttack(f,STANDING_HEAVY_LAUNCHER.id):f;}
 export function startLight(f:FighterState,input:FighterInput):FighterState{return input.light&&f.mode==="idle"?beginAttack(f,STANDING_LIGHT.id):f;}
 export function isBlocking(defender:FighterState,input:FighterInput):boolean{return defender.grounded&&(defender.facing===1?input.left:input.right);}
