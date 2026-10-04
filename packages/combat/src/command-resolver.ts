@@ -6,7 +6,7 @@ export function resolveCombatCommand(input:FighterInput,throwLocked:boolean):Res
  const lockedInput=throwLocked?neutralizeLockedInput(input):input;
  const superCommand=lockedInput.down&&lockedInput.special;
  const projectileCommand=lockedInput.medium&&lockedInput.special&&!superCommand;
- const owner:CombatCommandOwner=superCommand?"super":projectileCommand?"projectile":lockedInput.throw?"throw":"none";
+ const owner:CombatCommandOwner=superCommand?"super":projectileCommand?"projectile":!throwLocked&&lockedInput.throw?"throw":"none";
  const actionInput=projectileCommand?{...lockedInput,medium:false,special:false,throw:false}:superCommand?{...lockedInput,down:false,throw:false}:lockedInput;
  return{lockedInput,actionInput,owner};
 }
