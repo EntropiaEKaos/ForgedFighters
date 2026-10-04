@@ -17,7 +17,7 @@ export function stepCombatMatch(state:MatchState,inputs:readonly[FighterInput,Fi
  if(inputs[0].throw&&!throws[0]&&a.mode==="idle")throws[0]=beginThrow();if(inputs[1].throw&&!throws[1]&&b.mode==="idle")throws[1]=beginThrow();
  if(throws[0]){if(canTechThrow(throws[0],inputs[1].throw)){throws[0]=undefined;}else if(canThrowConnect(throws[0],a,b,BASIC_THROW,throws[1])){b={...b,health:Math.max(0,b.health-BASIC_THROW.damage),mode:"hitstun",stunFrames:BASIC_THROW.techWindow};throws[0]=undefined;}else throws[0]=advanceThrow(throws[0]);}
  if(throws[1]){if(canTechThrow(throws[1],inputs[0].throw)){throws[1]=undefined;}else if(canThrowConnect(throws[1],b,a,BASIC_THROW,throws[0])){a={...a,health:Math.max(0,a.health-BASIC_THROW.damage),mode:"hitstun",stunFrames:BASIC_THROW.techWindow};throws[1]=undefined;}else throws[1]=advanceThrow(throws[1]);}
- a=jumpCancelLauncher(a,lockedInputs[0]);b=jumpCancelLauncher(b,lockedInputs[1]);
+ a=jumpCancelLauncher(a,actionInputA);b=jumpCancelLauncher(b,actionInputB);
  const superHpB=b.health;[a,b]=resolveBasicSuper(a,b,guards[1]);if(b.health<superHpB)combos=[addComboHit(combos[0],BASIC_SUPER.damage,frame).combo,combos[1]];const superHpA=a.health;[b,a]=resolveBasicSuper(b,a,guards[0]);if(a.health<superHpA)combos=[combos[0],addComboHit(combos[1],BASIC_SUPER.damage,frame).combo];
  const airHpB=b.health;if(canJuggle(juggles[0],1)){[a,b]=resolveAirJuggleLight(a,b);if(b.health<airHpB){juggles[0]=applyJuggle(juggles[0],1);combos=[addComboHit(combos[0],AIR_JUGGLE_LIGHT.damage,frame).combo,combos[1]];}}
  const airHpA=a.health;if(canJuggle(juggles[1],1)){[b,a]=resolveAirJuggleLight(b,a);if(a.health<airHpA){juggles[1]=applyJuggle(juggles[1],1);combos=[combos[0],addComboHit(combos[1],AIR_JUGGLE_LIGHT.damage,frame).combo];}}
