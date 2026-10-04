@@ -5,3 +5,5 @@ export const STANDING_LIGHT:MoveDefinition={id:"standing-light",startup:3,active
 
 export const STANDING_HEAVY_LAUNCHER:MoveDefinition={id:"standing-heavy-launcher",startup:6,active:3,recovery:16,damage:800,hitstun:24,blockstun:11,hitstop:7,hitbox:{x:30,y:22,width:68,height:72},hurtbox:{x:-30,y:0,width:60,height:112}};
 export const AIR_JUGGLE_LIGHT:MoveDefinition={id:"air-juggle-light",startup:3,active:3,recovery:8,damage:350,hitstun:16,blockstun:6,hitstop:4,hitbox:{x:24,y:-4,width:58,height:58},hurtbox:{x:-26,y:-12,width:52,height:104}};
+
+export const BOUNCE_LAUNCHER:MoveDefinition={id:"bounce-launcher",startup:8,active:3,recovery:18,damage:900,hitstun:26,blockstun:12,hitstop:8,bounce:{wall:true,ground:true},hitbox:{x:32,y:20,width:72,height:76},hurtbox:{x:-30,y:0,width:60,height:112}};
