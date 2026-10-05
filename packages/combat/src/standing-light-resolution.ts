@@ -1,0 +1,11 @@
+import type{FighterInput,FighterState}from"@forged-fighter/core";import{addComboHit,scaledDamage,type ComboState}from"./combo.js";import{absorbArmorHit,armorDamage,hasArmor,isCounterHitTarget,resolveParry,type DefenseReactionState}from"./defense-reactions.js";import{gainMeter,LIGHT_HIT_METER_GAIN}from"./meter.js";import{STANDING_LIGHT}from"./moves.js";import{resolveStandingLight}from"./runtime.js";
+export type StandingLightResult="none"|"hit"|"counter"|"armor"|"parry";
+export interface StandingLightResolution{attacker:FighterState;defender:FighterState;combo:ComboState;defenseReaction:DefenseReactionState;result:StandingLightResult;}
+export function resolveStandingLightContact(attacker:FighterState,defender:FighterState,defenderSnapshot:FighterState,defenderInput:FighterInput,combo:ComboState,defenseReaction:DefenseReactionState,frame:number):StandingLightResolution{
+ const hp=defender.health,armored=hasArmor(defenseReaction),parry=defenseReaction.kind==="parry",counter=isCounterHitTarget(defender.mode);
+ let[nextAttacker,nextDefender]=resolveStandingLight(attacker,defender,defenderInput,armorDamage(defenseReaction,scaledDamage(STANDING_LIGHT.damage,combo.hits)));
+ if(parry&&nextAttacker.attack?.contact==="hit"){const reaction=resolveParry(defenseReaction);nextAttacker={...nextAttacker,attack:nextAttacker.attack?{...nextAttacker.attack,contact:"parry"}:nextAttacker.attack};nextDefender={...defenderSnapshot,hitstopFrames:nextDefender.hitstopFrames};return{attacker:nextAttacker,defender:nextDefender,combo,defenseReaction:reaction,result:"parry"};}
+ if(armored&&nextAttacker.attack?.contact==="hit"){return{attacker:nextAttacker,defender:{...nextDefender,mode:"idle",stunFrames:0},combo,defenseReaction:absorbArmorHit(defenseReaction),result:"armor"};}
+ if(nextDefender.health<hp){const result:StandingLightResult=counter&&nextAttacker.attack?.contact==="hit"?"counter":"hit";if(result==="counter")nextAttacker={...nextAttacker,attack:{...nextAttacker.attack!,contact:"counter"}};nextAttacker=gainMeter(nextAttacker,LIGHT_HIT_METER_GAIN);return{attacker:nextAttacker,defender:nextDefender,combo:addComboHit(combo,STANDING_LIGHT.damage,frame).combo,defenseReaction,result};}
+ return{attacker:nextAttacker,defender:nextDefender,combo,defenseReaction,result:"none"};
+}
