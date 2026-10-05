@@ -1,0 +1,8 @@
+import{describe,expect,it}from"vitest";import{createInitialState}from"@forged-fighter/core";import{resolveProjectileSpawns}from"./projectile-spawn-resolution.js";
+describe("projectile spawn resolution",()=>{
+ it("spawns on rising command edge and increments id",()=>{const s=createInitialState();const r=resolveProjectileSpawns([],7,s.fighters,[true,false],[false,false]);expect(r.projectiles).toHaveLength(1);expect(r.projectiles[0]?.id).toBe(7);expect(r.projectiles[0]?.owner).toBe(0);expect(r.nextProjectileId).toBe(8);expect(r.commandHeld).toEqual([true,false]);});
+ it("does not respawn while command remains held",()=>{const s=createInitialState();const r=resolveProjectileSpawns([],7,s.fighters,[true,false],[true,false]);expect(r.projectiles).toHaveLength(0);expect(r.nextProjectileId).toBe(7);});
+ it("does not spawn unless previous fighter state is idle",()=>{const s=createInitialState();const fighters=[{...s.fighters[0],mode:"attack" as const},s.fighters[1]]as const;const r=resolveProjectileSpawns([],7,fighters,[true,false],[false,false]);expect(r.projectiles).toHaveLength(0);expect(r.commandHeld).toEqual([true,false]);});
+ it("spawns both players in deterministic player order",()=>{const s=createInitialState();const r=resolveProjectileSpawns([],10,s.fighters,[true,true],[false,false]);expect(r.projectiles.map(p=>[p.id,p.owner])).toEqual([[10,0],[11,1]]);expect(r.nextProjectileId).toBe(12);});
+ it("rearmer releases held state without spawning",()=>{const s=createInitialState();const r=resolveProjectileSpawns([],7,s.fighters,[false,false],[true,false]);expect(r.projectiles).toHaveLength(0);expect(r.commandHeld).toEqual([false,false]);});
+});
