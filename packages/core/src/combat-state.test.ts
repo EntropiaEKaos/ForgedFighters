@@ -1,0 +1,2 @@
+import{describe,expect,it}from"vitest";import{applyHit,beginAttack,createInitialState,tickStun}from"./index.js";
+describe("combat state",()=>{it("starts an attack",()=>{const f=beginAttack(createInitialState().fighters[0],"light");expect(f.mode).toBe("attack");expect(f.attack?.frame).toBe(0);});it("applies damage and hitstun",()=>{const f=applyHit(createInitialState().fighters[1],500,10);expect(f.health).toBe(9500);expect(f.mode).toBe("hitstun");expect(tickStun(f).stunFrames).toBe(9);});});

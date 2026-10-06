@@ -1,15 +1,1 @@
-{
-  "name": "forged-fighters",
-  "private": true,
-  "version": "0.0.0",
-  "packageManager": "pnpm@10.15.1",
-  "scripts": {
-    "build": "pnpm -r build",
-    "test": "pnpm -r test",
-    "typecheck": "pnpm -r typecheck",
-    "lint": "pnpm -r lint"
-  },
-  "engines": {
-    "node": ">=22"
-  }
-}
+{"name":"forged-fighters","private":true,"version":"0.0.0","packageManager":"pnpm@10.15.1","scripts":{"build":"tsc -b","test":"pnpm -r test","typecheck":"tsc -b --pretty false","clean":"tsc -b --clean","lint":"pnpm -r lint"},"devDependencies":{"typescript":"^5.9.2"},"engines":{"node":">=22"}}
