@@ -47,12 +47,14 @@ class FightScene extends Phaser.Scene{
   return[a,b];
  }
  update(_time:number,delta:number){
-  if(Phaser.Input.Keyboard.JustDown(this.keys.P)){this.paused=!this.paused;this.pauseText.setVisible(this.paused);this.accumulator=0;}\n  if(Phaser.Input.Keyboard.JustDown(this.keys.R)){this.state=createInitialState(20261003);this.accumulator=0;this.roundOver=false;this.paused=false;this.pauseText.setVisible(false);this.resultText.setText("");this.lastHealth=[10000,10000];this.tweens.killTweensOf(this.hitFlashes);for(const flash of this.hitFlashes)flash.setAlpha(0);}\n  if(this.paused)return;\n  this.accumulator=Math.min(this.accumulator+delta,250);
+  if(Phaser.Input.Keyboard.JustDown(this.keys.P)){this.paused=!this.paused;this.pauseText.setVisible(this.paused);this.accumulator=0;}\n  if(Phaser.Input.Keyboard.JustDown(this.keys.R)){this.state=createInitialState(20261003);this.accumulator=0;this.roundOver=false;this.paused=false;this.pauseText.setVisible(false);this.resultText.setText("");this.lastHealth=[10000,10000];this.tweens.killTweensOf(this.hitFlashes);for(const flash of this.hitFlashes)flash.setAlpha(0);}\n  if(this.paused)return;
+  this.accumulator=Math.min(this.accumulator+delta,250);
   let ticks=0;while(this.accumulator>=TICK_MS&&ticks<8){if(!this.roundOver)this.state=stepCombatMatch(this.state,this.readInputs());this.accumulator-=TICK_MS;ticks++;}
   const fighters=this.state.fighters;
   fighters.forEach((f:FighterState,i:number)=>{
    this.fighters[i].setPosition(WIDTH/2+f.x,FLOOR-f.y).setScale(f.facing===1?1:-1,1);
-   const limb=this.limbs[i];const motion=this.state.frame*0.16+i;const walking=f.mode==="walk";limb.legs.setAngle(walking?Math.sin(motion)*13:0);limb.arm.setAngle(f.mode==="attack"?-65:walking?Math.sin(motion+Math.PI)*14:0);limb.arm.x=f.mode==="attack"?75:49;limb.head.y=-192+(walking?Math.sin(motion*2)*3:0);\n   this.fighters[i].setAlpha(f.hitstopFrames>0?0.78:1);const pose=f.mode==="attack"?1.08:f.mode==="crouch"?0.72:f.mode==="knockdown"?0.42:1;this.fighters[i].setScale((f.facing===1?1:-1)*(f.mode==="attack"?1.08:1),pose);this.fighters[i].setAngle(f.mode==="knockdown"?(i===0?-55:55):0);
+   const limb=this.limbs[i];const motion=this.state.frame*0.16+i;const walking=f.mode==="walk";limb.legs.setAngle(walking?Math.sin(motion)*13:0);limb.arm.setAngle(f.mode==="attack"?-65:walking?Math.sin(motion+Math.PI)*14:0);limb.arm.x=f.mode==="attack"?75:49;limb.head.y=-192+(walking?Math.sin(motion*2)*3:0);
+   this.fighters[i].setAlpha(f.hitstopFrames>0?0.78:1);const pose=f.mode==="attack"?1.08:f.mode==="crouch"?0.72:f.mode==="knockdown"?0.42:1;this.fighters[i].setScale((f.facing===1?1:-1)*(f.mode==="attack"?1.08:1),pose);this.fighters[i].setAngle(f.mode==="knockdown"?(i===0?-55:55):0);
    this.bars[i].width=486*Math.max(0,Math.min(1,f.health/10000));
    this.meterBars[i].width=486*Math.max(0,Math.min(1,f.meter/1000));
    this.statuses[i].setText(f.mode.toUpperCase()+(f.attack?" · "+f.attack.moveId.toUpperCase():""));
