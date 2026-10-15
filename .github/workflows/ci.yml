@@ -35,6 +35,9 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Build Phaser browser bundle
+        run: pnpm --filter @forged-fighter/client build
+
       - name: Install Chromium for visual evidence
         run: pnpm --filter @forged-fighter/client exec playwright install --with-deps chromium
 
