@@ -16,11 +16,21 @@ try{
  const arena=await page.screenshot({path:`${output}/forged-fighters-arena.png`});
  await page.keyboard.down("f");await page.waitForTimeout(180);
  const attack=await page.screenshot({path:`${output}/forged-fighters-attack.png`});
- await page.keyboard.up("f");await page.keyboard.press("p");
+ await page.keyboard.up("f");
+ if(await readFrame()<=beforeAttack)throw new Error("Combat simulation did not advance during attack");
+ await page.keyboard.press("p");
  await page.waitForTimeout(200);
+ if(await canvas.getAttribute("data-forged-paused")!=="true")throw new Error("Pause input did not pause the match");
+ const pausedFrame=await readFrame();await page.waitForTimeout(250);
+ if(await readFrame()!==pausedFrame)throw new Error("Combat advanced while paused");
  const pause=await page.screenshot({path:`${output}/forged-fighters-pause.png`});
  const hashes=[arena,attack,pause].map(data=>createHash("sha256").update(data).digest("hex"));
  if(new Set(hashes).size!==3)throw new Error("Visual states are identical; expected distinct arena, attack and pause screenshots");
+ await page.keyboard.press("p");await page.waitForTimeout(180);
+ if(await readFrame()<=pausedFrame)throw new Error("Combat did not resume");
+ await page.keyboard.press("r");await page.waitForTimeout(120);
+ if(await canvas.getAttribute("data-forged-paused")!=="false")throw new Error("Rematch failed to clear pause");
+ if(await canvas.getAttribute("data-forged-round-over")!=="false")throw new Error("Rematch failed to reset round");
  if(errors.length)throw new Error("Browser runtime errors: "+errors.join(" | "));
  console.log("Captured arena, attack, and pause screenshots");
 }finally{await browser.close();}
