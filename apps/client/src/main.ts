@@ -58,7 +58,7 @@ class FightScene extends Phaser.Scene{
    this.lastHealth[i]=f.health;
   });
   this.effects.clear();
-  this.timer.setText(String(Math.max(0,99-Math.floor(this.state.frame/60))));
+  const remaining=Math.max(0,99-Math.floor(this.state.frame/60));this.timer.setText(String(remaining));if(!this.roundOver&&(remaining===0||fighters.some(f=>f.health<=0))){this.roundOver=true;const [a,b]=fighters;const winner=a.health===b.health?"DRAW":a.health>b.health?"PLAYER 1 WINS":"PLAYER 2 WINS";this.resultText.setText(winner+"\\nPRESS R TO REMATCH");}
  }
 }
 new Phaser.Game({type:Phaser.AUTO,width:WIDTH,height:HEIGHT,parent:"game",scene:FightScene,backgroundColor:"#101523",scale:{mode:Phaser.Scale.FIT,autoCenter:Phaser.Scale.CENTER_BOTH},physics:{default:""}});
