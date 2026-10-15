@@ -34,3 +34,24 @@ jobs:
 
       - name: Build
         run: pnpm build
+
+      - name: Install Chromium for visual evidence
+        run: npx --yes playwright@1.56.1 install --with-deps chromium
+
+      - name: Capture Phaser gameplay screenshot
+        run: |
+          mkdir -p artifacts
+          pnpm --filter @forged-fighter/client exec vite --host 127.0.0.1 --port 4173 > /tmp/forged-vite.log 2>&1 &
+          for i in $(seq 1 40); do
+            if curl -fsS http://127.0.0.1:4173/ >/dev/null; then break; fi
+            sleep 1
+          done
+          npx --yes playwright@1.56.1 screenshot --browser chromium --viewport-size "1280,720" --wait-for-timeout 2000 http://127.0.0.1:4173/ artifacts/forged-fighters-arena.png
+
+      - name: Upload visual evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: forged-fighters-visual-evidence
+          path: artifacts/*.png
+          if-no-files-found: warn
