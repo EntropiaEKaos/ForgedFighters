@@ -8,6 +8,10 @@ try{
  const errors=[];page.on("pageerror",error=>errors.push(error.message));
  await page.goto("http://127.0.0.1:4173/",{waitUntil:"networkidle"});
  await page.waitForTimeout(1200);
+ const canvas=page.locator("#game canvas");
+ await canvas.waitFor({state:"visible",timeout:15000});
+ if(await page.locator("vite-error-overlay").count())throw new Error("Vite error overlay detected");
+ if(await canvas.count()!==1)throw new Error("Phaser canvas not mounted");
  await page.screenshot({path:`${output}/forged-fighters-arena.png`});
  await page.keyboard.down("f");await page.waitForTimeout(180);
  await page.screenshot({path:`${output}/forged-fighters-attack.png`});
