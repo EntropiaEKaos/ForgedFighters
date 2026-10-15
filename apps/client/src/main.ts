@@ -46,10 +46,11 @@ class FightScene extends Phaser.Scene{
   b.left=k.LEFT.isDown;b.right=k.RIGHT.isDown;b.up=k.UP.isDown;b.down=k.DOWN.isDown;b.light=k.ONE.isDown;b.heavy=k.TWO.isDown;b.special=k.THREE.isDown;b.throw=k.ZERO.isDown;
   return[a,b];
  }
+ syncEvidence(){const canvas=this.game.canvas;canvas.dataset.forgedFrame=String(this.state.frame);canvas.dataset.forgedPaused=String(this.paused);canvas.dataset.forgedRoundOver=String(this.roundOver);canvas.dataset.forgedHealth=this.state.fighters.map(f=>f.health).join(",");}
  update(_time:number,delta:number){
   if(Phaser.Input.Keyboard.JustDown(this.keys.P)){this.paused=!this.paused;this.pauseText.setVisible(this.paused);this.accumulator=0;}
   if(Phaser.Input.Keyboard.JustDown(this.keys.R)){this.state=createInitialState(20261003);this.accumulator=0;this.roundOver=false;this.paused=false;this.pauseText.setVisible(false);this.resultText.setText("");this.lastHealth=[10000,10000];this.tweens.killTweensOf(this.hitFlashes);for(const flash of this.hitFlashes)flash.setAlpha(0);}
-  if(this.paused)return;
+  if(this.paused){this.syncEvidence();return;}
   this.accumulator=Math.min(this.accumulator+delta,250);
   let ticks=0;while(this.accumulator>=TICK_MS&&ticks<8){if(!this.roundOver)this.state=stepCombatMatch(this.state,this.readInputs());this.accumulator-=TICK_MS;ticks++;}
   const fighters=this.state.fighters;
@@ -65,6 +66,7 @@ class FightScene extends Phaser.Scene{
   });
   this.effects.clear();
   const remaining=Math.max(0,99-Math.floor(this.state.frame/60));this.timer.setText(String(remaining));if(!this.roundOver&&(remaining===0||fighters.some(f=>f.health<=0))){this.roundOver=true;const [a,b]=fighters;const winner=a.health===b.health?"DRAW":a.health>b.health?"PLAYER 1 WINS":"PLAYER 2 WINS";this.resultText.setText(winner+"\nPRESS R TO REMATCH");}
+  this.syncEvidence();
  }
 }
 new Phaser.Game({type:Phaser.AUTO,width:WIDTH,height:HEIGHT,parent:"game",scene:FightScene,backgroundColor:"#101523",scale:{mode:Phaser.Scale.FIT,autoCenter:Phaser.Scale.CENTER_BOTH},physics:{default:""}});
