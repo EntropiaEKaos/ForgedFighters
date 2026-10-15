@@ -6,7 +6,7 @@ const WIDTH=1280,HEIGHT=720,FLOOR=580;
 class FightScene extends Phaser.Scene{
  state=createInitialState(20261003); keys!:Record<string,Phaser.Input.Keyboard.Key>;fighters!:Phaser.GameObjects.Container[];
  bars!:Phaser.GameObjects.Rectangle[];meterBars!:Phaser.GameObjects.Rectangle[];statuses!:Phaser.GameObjects.Text[];timer!:Phaser.GameObjects.Text;effects!:Phaser.GameObjects.Graphics;
- accumulator=0;lastHealth=[10000,10000];lastContacts=["",""];roundSeconds=99;roundOver=false;resultText!:Phaser.GameObjects.Text;hitFlashes!:Phaser.GameObjects.Circle[];limbs!:Array<{arm:Phaser.GameObjects.Rectangle;legs:Phaser.GameObjects.Rectangle;head:Phaser.GameObjects.Arc}>;
+ accumulator=0;lastHealth=[10000,10000];lastContacts=["",""];roundSeconds=99;roundOver=false;paused=false;pauseText!:Phaser.GameObjects.Text;resultText!:Phaser.GameObjects.Text;hitFlashes!:Phaser.GameObjects.Circle[];limbs!:Array<{arm:Phaser.GameObjects.Rectangle;legs:Phaser.GameObjects.Rectangle;head:Phaser.GameObjects.Arc}>;
  create(){
   this.cameras.main.setBackgroundColor("#101523");
   const g=this.add.graphics();
@@ -23,11 +23,11 @@ class FightScene extends Phaser.Scene{
   this.bars=[this.add.rectangle(36,78,486,19,0x48b9ed).setOrigin(0,0.5),this.add.rectangle(WIDTH-36,78,486,19,0xff6178).setOrigin(1,0.5)];
   this.meterBars=[this.add.rectangle(36,115,0,9,0xf7d477).setOrigin(0,0.5),this.add.rectangle(WIDTH-36,115,0,9,0xf7d477).setOrigin(1,0.5)];
   this.timer=this.add.text(WIDTH/2,70,"99",{fontFamily:"Arial",fontSize:"35px",fontStyle:"bold",color:"#ffffff"}).setOrigin(0.5);this.resultText=this.add.text(WIDTH/2,260,"",{fontFamily:"Arial",fontSize:"42px",fontStyle:"bold",color:"#f7d477",align:"center",stroke:"#101523",strokeThickness:8}).setOrigin(0.5).setDepth(20);
-  this.statuses=[this.add.text(36,134,"READY",{fontFamily:"monospace",fontSize:"15px",color:"#b6dfff"}),this.add.text(WIDTH-36,134,"READY",{fontFamily:"monospace",fontSize:"15px",color:"#ffc1c9"}).setOrigin(1,0)];
+  this.pauseText=this.add.text(WIDTH/2,200,"PAUSED · PRESS P TO RESUME",{fontFamily:"Arial",fontSize:"30px",fontStyle:"bold",color:"#f7d477",stroke:"#101523",strokeThickness:6}).setOrigin(0.5).setDepth(20).setVisible(false);\n  this.statuses=[this.add.text(36,134,"READY",{fontFamily:"monospace",fontSize:"15px",color:"#b6dfff"}),this.add.text(WIDTH-36,134,"READY",{fontFamily:"monospace",fontSize:"15px",color:"#ffc1c9"}).setOrigin(1,0)];
   this.limbs=[];this.fighters=[this.makeFighter(0x48b9ed,0x163a60),this.makeFighter(0xff6178,0x6b2238)];
   this.effects=this.add.graphics().setDepth(10);this.hitFlashes=[this.add.circle(0,0,40,0xffffff,0).setDepth(12),this.add.circle(0,0,40,0xffffff,0).setDepth(12)];
-  this.add.text(WIDTH/2,HEIGHT-28,"P1  A/D MOVE  W JUMP  S CROUCH  F LIGHT  G HEAVY  H SPECIAL  J THROW     |     P2  ARROWS  1 LIGHT  2 HEAVY  3 SPECIAL  0 THROW",{fontFamily:"monospace",fontSize:"13px",color:"#d0d8e6"}).setOrigin(0.5);
-  this.keys=this.input.keyboard!.addKeys("A,D,W,S,F,G,H,J,R,LEFT,RIGHT,UP,DOWN,ONE,TWO,THREE,ZERO") as Record<string,Phaser.Input.Keyboard.Key>;
+  this.add.text(WIDTH/2,HEIGHT-51,"P PAUSE  ·  R RESTART",{fontFamily:"monospace",fontSize:"15px",color:"#f7d477"}).setOrigin(0.5);\n  this.add.text(WIDTH/2,HEIGHT-28,"P1  A/D MOVE  W JUMP  S CROUCH  F LIGHT  G HEAVY  H SPECIAL  J THROW     |     P2  ARROWS  1 LIGHT  2 HEAVY  3 SPECIAL  0 THROW",{fontFamily:"monospace",fontSize:"13px",color:"#d0d8e6"}).setOrigin(0.5);
+  this.keys=this.input.keyboard!.addKeys("A,D,W,S,F,G,H,J,R,P,LEFT,RIGHT,UP,DOWN,ONE,TWO,THREE,ZERO") as Record<string,Phaser.Input.Keyboard.Key>;
  }
  makeFighter(primary:number,dark:number){
   const c=this.add.container(0,0);
@@ -45,7 +45,7 @@ class FightScene extends Phaser.Scene{
   return[a,b];
  }
  update(_time:number,delta:number){
-  if(Phaser.Input.Keyboard.JustDown(this.keys.R)){this.state=createInitialState(20261003);this.accumulator=0;this.roundOver=false;this.resultText.setText("");this.lastHealth=[10000,10000];this.tweens.killTweensOf(this.hitFlashes);for(const flash of this.hitFlashes)flash.setAlpha(0);}\n  this.accumulator=Math.min(this.accumulator+delta,250);
+  if(Phaser.Input.Keyboard.JustDown(this.keys.P)){this.paused=!this.paused;this.pauseText.setVisible(this.paused);this.accumulator=0;}\n  if(Phaser.Input.Keyboard.JustDown(this.keys.R)){this.state=createInitialState(20261003);this.accumulator=0;this.roundOver=false;this.paused=false;this.pauseText.setVisible(false);this.resultText.setText("");this.lastHealth=[10000,10000];this.tweens.killTweensOf(this.hitFlashes);for(const flash of this.hitFlashes)flash.setAlpha(0);}\n  if(this.paused)return;\n  this.accumulator=Math.min(this.accumulator+delta,250);
   let ticks=0;while(this.accumulator>=TICK_MS&&ticks<8){if(!this.roundOver)this.state=stepCombatMatch(this.state,this.readInputs());this.accumulator-=TICK_MS;ticks++;}
   const fighters=this.state.fighters;
   fighters.forEach((f:FighterState,i:number)=>{
