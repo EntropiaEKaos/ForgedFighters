@@ -13,6 +13,9 @@ try{
  await canvas.waitFor({state:"visible",timeout:15000});
  if(await page.locator("vite-error-overlay").count())throw new Error("Vite error overlay detected");
  if(await canvas.count()!==1)throw new Error("Phaser canvas not mounted");
+ await page.waitForFunction(()=>Number(document.querySelector("#game canvas")?.dataset.forgedFrame)>0);
+ const readFrame=()=>canvas.getAttribute("data-forged-frame").then(Number);
+ const beforeAttack=await readFrame();
  const arena=await page.screenshot({path:`${output}/forged-fighters-arena.png`});
  await page.keyboard.down("f");await page.waitForTimeout(180);
  const attack=await page.screenshot({path:`${output}/forged-fighters-attack.png`});
