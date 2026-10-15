@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.15.1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install
+        run: pnpm install
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Test
+        run: pnpm test
+
+      - name: Build
+        run: pnpm build
+
+      - name: Build Phaser browser bundle
+        run: pnpm --filter @forged-fighter/client build
+
+      - name: Install Chromium for visual evidence
+        run: pnpm --filter @forged-fighter/client exec playwright install --with-deps chromium
+
+      - name: Capture Phaser gameplay screenshot
+        run: |
+          mkdir -p artifacts
+          pnpm --filter @forged-fighter/client exec vite --host 127.0.0.1 --port 4173 > /tmp/forged-vite.log 2>&1 &
+          for i in $(seq 1 40); do
+            if curl -fsS http://127.0.0.1:4173/ >/dev/null; then break; fi
+            sleep 1
+          done
+          pnpm --filter @forged-fighter/client exec node scripts/capture.mjs
+
+      - name: Upload visual evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: forged-fighters-visual-evidence
+          path: apps/client/artifacts/*.png
+          if-no-files-found: error

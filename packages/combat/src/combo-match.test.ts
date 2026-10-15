@@ -1,0 +1,3 @@
+import{describe,expect,it}from"vitest";import{type FighterInput}from"@forged-fighter/core";import{createCombatMatchState}from"./combat-match.js";import{stepCombatMatch}from"./match-step.js";
+const n=():FighterInput=>({left:false,right:false,up:false,down:false,light:false,medium:false,heavy:false,special:false,throw:false});
+describe("authoritative combo match",()=>{it("tracks first real hit in serializable combat state",()=>{let s=createCombatMatchState(7);s={...s,fighters:[{...s.fighters[0],x:0},{...s.fighters[1],x:70}]};for(let i=0;i<4;i++)s=stepCombatMatch(s,[{...n(),light:i===0},n()]);expect(s.fighters[1].health).toBe(9500);expect(s.combos[0].hits).toBe(1);expect(s.combos[0].totalDamage).toBe(500);expect(s.combos[1].hits).toBe(0);});});

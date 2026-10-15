@@ -1,0 +1,9 @@
+import{describe,expect,it}from"vitest";import type{FighterInput}from"@forged-fighter/core";import{resolveCombatCommand}from"./command-resolver.js";
+const n=():FighterInput=>({left:false,right:false,up:false,down:false,light:false,medium:false,heavy:false,special:false,throw:false});
+describe("deterministic combat command resolver",()=>{
+ it("passes neutral action input through unchanged",()=>{const input={...n(),right:true,light:true};const r=resolveCombatCommand(input,false);expect(r.owner).toBe("none");expect(r.lockedInput).toEqual(input);expect(r.actionInput).toEqual(input);});
+ it("gives super priority over overlapping projectile signature",()=>{const r=resolveCombatCommand({...n(),down:true,medium:true,special:true,throw:true},false);expect(r.owner).toBe("super");expect(r.actionInput.down).toBe(false);expect(r.actionInput.throw).toBe(false);expect(r.actionInput.medium).toBe(true);expect(r.actionInput.special).toBe(true);});
+ it("projectile owns medium special and consumes throw",()=>{const r=resolveCombatCommand({...n(),medium:true,special:true,throw:true},false);expect(r.owner).toBe("projectile");expect(r.actionInput.medium).toBe(false);expect(r.actionInput.special).toBe(false);expect(r.actionInput.throw).toBe(false);});
+ it("throw lock suppresses special commands and action controls",()=>{const r=resolveCombatCommand({...n(),right:true,down:true,medium:true,special:true,throw:true},true);expect(r.owner).toBe("none");expect(r.lockedInput.right).toBe(false);expect(r.lockedInput.down).toBe(false);expect(r.lockedInput.medium).toBe(false);expect(r.lockedInput.special).toBe(false);expect(r.actionInput.throw).toBe(true);});
+ it("classifies standalone throw without changing its action input",()=>{const input={...n(),throw:true};const r=resolveCombatCommand(input,false);expect(r.owner).toBe("throw");expect(r.actionInput).toEqual(input);});
+});

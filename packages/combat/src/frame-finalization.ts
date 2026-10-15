@@ -1,0 +1,3 @@
+import type{FighterState}from"@forged-fighter/core";import{advanceAttack}from"./runtime.js";import{tickDefenseReaction,type DefenseReactionState}from"./defense-reactions.js";
+export interface FrameFinalization{fighters:readonly[FighterState,FighterState];defenseReactions:readonly[DefenseReactionState,DefenseReactionState];}
+export function finalizeCombatFrame(fighters:readonly[FighterState,FighterState],defenseReactions:readonly[DefenseReactionState,DefenseReactionState]):FrameFinalization{return{fighters:[advanceAttack(fighters[0]),advanceAttack(fighters[1])],defenseReactions:[tickDefenseReaction(defenseReactions[0]),tickDefenseReaction(defenseReactions[1])]};}

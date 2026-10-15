@@ -1,0 +1,8 @@
+import{describe,expect,it}from"vitest";import{createInitialState,type FighterState}from"@forged-fighter/core";import{resolveStunRecovery}from"./stun-recovery-resolution.js";
+const j={points:4,hits:2},b={wallBounces:1,groundBounces:1},e={wall:true,ground:true};
+describe("stun recovery resolution",()=>{
+ it("ticks hitstun and resets combat resources when recovery reaches idle",()=>{const f:FighterState={...createInitialState().fighters[0],mode:"hitstun",stunFrames:1};const r=resolveStunRecovery(f,false,j,b,e);expect(r.recovered).toBe(true);expect(r.fighter.mode).toBe("idle");expect(r.juggle).toEqual({points:0,hits:0});expect(r.bounce).toEqual({wallBounces:0,groundBounces:0});expect(r.entitlement).toEqual({wall:false,ground:false});});
+ it("does not tick while hitstop is active",()=>{const f:FighterState={...createInitialState().fighters[0],mode:"hitstun",stunFrames:1,hitstopFrames:2};const r=resolveStunRecovery(f,false,j,b,e);expect(r.fighter).toEqual(f);expect(r.recovered).toBe(false);expect(r.juggle).toEqual(j);});
+ it("does not tick on a landing frame",()=>{const f:FighterState={...createInitialState().fighters[0],mode:"knockdown",stunFrames:1};const r=resolveStunRecovery(f,true,j,b,e);expect(r.fighter).toEqual(f);expect(r.recovered).toBe(false);});
+ it("blockstun may tick to idle without resetting juggle/bounce resources",()=>{const f:FighterState={...createInitialState().fighters[0],mode:"blockstun",stunFrames:1};const r=resolveStunRecovery(f,false,j,b,e);expect(r.fighter.mode).toBe("idle");expect(r.recovered).toBe(false);expect(r.juggle).toEqual(j);expect(r.bounce).toEqual(b);expect(r.entitlement).toEqual(e);});
+});

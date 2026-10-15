@@ -1,0 +1,24 @@
+import type{FighterInput,PlayerId}from"@forged-fighter/core";import type{InputHistory}from"./input-history.js";
+export type RelativeDirection="N"|"F"|"B"|"U"|"D"|"UF"|"UB"|"DF"|"DB";
+export interface CommandSpec{id:string;sequence:readonly RelativeDirection[];windowFrames:number;}
+export const QCF:CommandSpec={id:"qcf",sequence:["D","DF","F"],windowFrames:12};
+export const QCB:CommandSpec={id:"qcb",sequence:["D","DB","B"],windowFrames:12};
+export const DP:CommandSpec={id:"dp",sequence:["F","D","DF"],windowFrames:12};
+export function relativeDirection(input:FighterInput,facing:-1|1):RelativeDirection{const f=facing===1?input.right:input.left,b=facing===1?input.left:input.right,v=input.up?"U":input.down?"D":"";const h=f?"F":b?"B":"";return(v+h||"N")as RelativeDirection;}
+function facingAt(history:InputHistory,player:PlayerId,frame:number,fallback:-1|1):-1|1{return history.getFacing(frame,player)??fallback;}
+export function recognizeCommand(history:InputHistory,player:PlayerId,endFrame:number,facing:-1|1,spec:CommandSpec):boolean{let wanted=spec.sequence.length-1;for(let frame=endFrame;frame>=Math.max(0,endFrame-spec.windowFrames+1)&&wanted>=0;frame--){const d=relativeDirection(history.get(frame)[player],facingAt(history,player,frame,facing));if(d===spec.sequence[wanted])wanted--;}return wanted<0;}
+
+export type CommandButton="light"|"medium"|"heavy"|"special"|"throw";
+export function buttonPressed(history:InputHistory,player:PlayerId,frame:number,button:CommandButton):boolean{const now=history.get(frame)[player][button],prev=frame>0?history.get(frame-1)[player][button]:false;return now&&!prev;}
+export function recognizeCommandWithButton(history:InputHistory,player:PlayerId,endFrame:number,facing:-1|1,spec:CommandSpec,button:CommandButton):boolean{return buttonPressed(history,player,endFrame,button)&&recognizeCommand(history,player,endFrame,facing,spec);}
+export function recognizeDoubleTap(history:InputHistory,player:PlayerId,endFrame:number,facing:-1|1,direction:"F"|"B",windowFrames=12):boolean{let taps=0,held=false;for(let frame=Math.max(0,endFrame-windowFrames+1);frame<=endFrame;frame++){const d=relativeDirection(history.get(frame)[player],facingAt(history,player,frame,facing));const now=d===direction||d===`U${direction}`||d===`D${direction}`;if(now&&!held)taps++;held=now;}return taps>=2;}
+function directionContains(d:RelativeDirection,axis:"B"|"D"|"F"|"U"):boolean{return d===axis||d.includes(axis);}
+export function recognizeCharge(history:InputHistory,player:PlayerId,endFrame:number,facing:-1|1,hold:"B"|"D",release:"F"|"U",holdFrames=30,releaseWindow=6):boolean{let releaseFrame=-1;for(let frame=endFrame;frame>=Math.max(0,endFrame-releaseWindow+1);frame--){const d=relativeDirection(history.get(frame)[player],facingAt(history,player,frame,facing));if(directionContains(d,release)){releaseFrame=frame;break;}}if(releaseFrame<0)return false;let held=0;for(let frame=releaseFrame-1;frame>=0;frame--){const d=relativeDirection(history.get(frame)[player],facingAt(history,player,frame,facing));if(!directionContains(d,hold))break;held++;}return held>=holdFrames;}
+
+export interface InputLeniency{motionWindowFrames:number;buttonWindowFrames:number;chargeReleaseWindowFrames:number;}
+export const STRICT_LENIENCY:InputLeniency={motionWindowFrames:8,buttonWindowFrames:1,chargeReleaseWindowFrames:3};
+export const STANDARD_LENIENCY:InputLeniency={motionWindowFrames:12,buttonWindowFrames:2,chargeReleaseWindowFrames:6};
+export const LENIENT_LENIENCY:InputLeniency={motionWindowFrames:18,buttonWindowFrames:4,chargeReleaseWindowFrames:9};
+export function recognizeChargeWithLeniency(history:InputHistory,player:PlayerId,endFrame:number,facing:-1|1,hold:"B"|"D",release:"F"|"U",holdFrames=30,leniency:InputLeniency=STANDARD_LENIENCY):boolean{return recognizeCharge(history,player,endFrame,facing,hold,release,holdFrames,leniency.chargeReleaseWindowFrames);}
+export function buttonReleased(history:InputHistory,player:PlayerId,frame:number,button:CommandButton):boolean{if(frame<=0)return false;return !history.get(frame)[player][button]&&history.get(frame-1)[player][button];}
+export function recognizeCommandWithEdge(history:InputHistory,player:PlayerId,endFrame:number,facing:-1|1,spec:CommandSpec,button:CommandButton,edge:"press"|"release"="press",leniency:InputLeniency=STANDARD_LENIENCY):boolean{const motion={...spec,windowFrames:leniency.motionWindowFrames};for(let frame=endFrame;frame>=Math.max(0,endFrame-leniency.buttonWindowFrames+1);frame--){const edgeOk=edge==="press"?buttonPressed(history,player,frame,button):buttonReleased(history,player,frame,button);if(edgeOk&&recognizeCommand(history,player,frame,facing,motion))return true;}return false;}

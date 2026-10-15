@@ -1,0 +1,3 @@
+import{describe,expect,it}from"vitest";import{GenericRollbackSession}from"./generic-rollback.js";
+interface ToyState{frame:number;score:number;mode:"toy";}
+describe("generic rollback",()=>{it("rolls back arbitrary deterministic state without fighters",()=>{const step=(s:ToyState,input:number):ToyState=>({...s,frame:s.frame+1,score:s.score+input});const session=new GenericRollbackSession<ToyState,number>({frame:0,score:0,mode:"toy"},step,()=>0);for(let f=0;f<20;f++){session.setInput(f,f%3);session.advance();}const expected=session.currentState,hash=session.hash;expect(expected.score).toBeGreaterThan(0);session.rollbackAndResimulate(0,20);expect(session.currentState).toEqual(expected);expect(session.hash).toBe(hash);});});
