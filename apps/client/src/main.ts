@@ -23,10 +23,12 @@ class FightScene extends Phaser.Scene{
   this.bars=[this.add.rectangle(36,78,486,19,0x48b9ed).setOrigin(0,0.5),this.add.rectangle(WIDTH-36,78,486,19,0xff6178).setOrigin(1,0.5)];
   this.meterBars=[this.add.rectangle(36,115,0,9,0xf7d477).setOrigin(0,0.5),this.add.rectangle(WIDTH-36,115,0,9,0xf7d477).setOrigin(1,0.5)];
   this.timer=this.add.text(WIDTH/2,70,"99",{fontFamily:"Arial",fontSize:"35px",fontStyle:"bold",color:"#ffffff"}).setOrigin(0.5);this.resultText=this.add.text(WIDTH/2,260,"",{fontFamily:"Arial",fontSize:"42px",fontStyle:"bold",color:"#f7d477",align:"center",stroke:"#101523",strokeThickness:8}).setOrigin(0.5).setDepth(20);
-  this.pauseText=this.add.text(WIDTH/2,200,"PAUSED · PRESS P TO RESUME",{fontFamily:"Arial",fontSize:"30px",fontStyle:"bold",color:"#f7d477",stroke:"#101523",strokeThickness:6}).setOrigin(0.5).setDepth(20).setVisible(false);\n  this.statuses=[this.add.text(36,134,"READY",{fontFamily:"monospace",fontSize:"15px",color:"#b6dfff"}),this.add.text(WIDTH-36,134,"READY",{fontFamily:"monospace",fontSize:"15px",color:"#ffc1c9"}).setOrigin(1,0)];
+  this.pauseText=this.add.text(WIDTH/2,200,"PAUSED · PRESS P TO RESUME",{fontFamily:"Arial",fontSize:"30px",fontStyle:"bold",color:"#f7d477",stroke:"#101523",strokeThickness:6}).setOrigin(0.5).setDepth(20).setVisible(false);
+  this.statuses=[this.add.text(36,134,"READY",{fontFamily:"monospace",fontSize:"15px",color:"#b6dfff"}),this.add.text(WIDTH-36,134,"READY",{fontFamily:"monospace",fontSize:"15px",color:"#ffc1c9"}).setOrigin(1,0)];
   this.limbs=[];this.fighters=[this.makeFighter(0x48b9ed,0x163a60),this.makeFighter(0xff6178,0x6b2238)];
   this.effects=this.add.graphics().setDepth(10);this.hitFlashes=[this.add.circle(0,0,40,0xffffff,0).setDepth(12),this.add.circle(0,0,40,0xffffff,0).setDepth(12)];
-  this.add.text(WIDTH/2,HEIGHT-51,"P PAUSE  ·  R RESTART",{fontFamily:"monospace",fontSize:"15px",color:"#f7d477"}).setOrigin(0.5);\n  this.add.text(WIDTH/2,HEIGHT-28,"P1  A/D MOVE  W JUMP  S CROUCH  F LIGHT  G HEAVY  H SPECIAL  J THROW     |     P2  ARROWS  1 LIGHT  2 HEAVY  3 SPECIAL  0 THROW",{fontFamily:"monospace",fontSize:"13px",color:"#d0d8e6"}).setOrigin(0.5);
+  this.add.text(WIDTH/2,HEIGHT-51,"P PAUSE  ·  R RESTART",{fontFamily:"monospace",fontSize:"15px",color:"#f7d477"}).setOrigin(0.5);
+  this.add.text(WIDTH/2,HEIGHT-28,"P1  A/D MOVE  W JUMP  S CROUCH  F LIGHT  G HEAVY  H SPECIAL  J THROW     |     P2  ARROWS  1 LIGHT  2 HEAVY  3 SPECIAL  0 THROW",{fontFamily:"monospace",fontSize:"13px",color:"#d0d8e6"}).setOrigin(0.5);
   this.keys=this.input.keyboard!.addKeys("A,D,W,S,F,G,H,J,R,P,LEFT,RIGHT,UP,DOWN,ONE,TWO,THREE,ZERO") as Record<string,Phaser.Input.Keyboard.Key>;
  }
  makeFighter(primary:number,dark:number){
