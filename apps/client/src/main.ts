@@ -6,7 +6,7 @@ const WIDTH=1280,HEIGHT=720,FLOOR=580;
 class FightScene extends Phaser.Scene{
  state=createInitialState(20261003); keys!:Record<string,Phaser.Input.Keyboard.Key>;fighters!:Phaser.GameObjects.Container[];
  bars!:Phaser.GameObjects.Rectangle[];meterBars!:Phaser.GameObjects.Rectangle[];statuses!:Phaser.GameObjects.Text[];timer!:Phaser.GameObjects.Text;effects!:Phaser.GameObjects.Graphics;
- accumulator=0;lastHealth=[10000,10000];lastContacts=["",""];roundSeconds=99;roundOver=false;resultText!:Phaser.GameObjects.Text;hitFlashes!:Phaser.GameObjects.Circle[];
+ accumulator=0;lastHealth=[10000,10000];lastContacts=["",""];roundSeconds=99;roundOver=false;resultText!:Phaser.GameObjects.Text;hitFlashes!:Phaser.GameObjects.Circle[];limbs!:Array<{arm:Phaser.GameObjects.Rectangle;legs:Phaser.GameObjects.Rectangle;head:Phaser.GameObjects.Arc}>;
  create(){
   this.cameras.main.setBackgroundColor("#101523");
   const g=this.add.graphics();
@@ -24,7 +24,7 @@ class FightScene extends Phaser.Scene{
   this.meterBars=[this.add.rectangle(36,115,0,9,0xf7d477).setOrigin(0,0.5),this.add.rectangle(WIDTH-36,115,0,9,0xf7d477).setOrigin(1,0.5)];
   this.timer=this.add.text(WIDTH/2,70,"99",{fontFamily:"Arial",fontSize:"35px",fontStyle:"bold",color:"#ffffff"}).setOrigin(0.5);this.resultText=this.add.text(WIDTH/2,260,"",{fontFamily:"Arial",fontSize:"42px",fontStyle:"bold",color:"#f7d477",align:"center",stroke:"#101523",strokeThickness:8}).setOrigin(0.5).setDepth(20);
   this.statuses=[this.add.text(36,134,"READY",{fontFamily:"monospace",fontSize:"15px",color:"#b6dfff"}),this.add.text(WIDTH-36,134,"READY",{fontFamily:"monospace",fontSize:"15px",color:"#ffc1c9"}).setOrigin(1,0)];
-  this.fighters=[this.makeFighter(0x48b9ed,0x163a60),this.makeFighter(0xff6178,0x6b2238)];
+  this.limbs=[];this.fighters=[this.makeFighter(0x48b9ed,0x163a60),this.makeFighter(0xff6178,0x6b2238)];
   this.effects=this.add.graphics().setDepth(10);this.hitFlashes=[this.add.circle(0,0,40,0xffffff,0).setDepth(12),this.add.circle(0,0,40,0xffffff,0).setDepth(12)];
   this.add.text(WIDTH/2,HEIGHT-28,"P1  A/D MOVE  W JUMP  S CROUCH  F LIGHT  G HEAVY  H SPECIAL  J THROW     |     P2  ARROWS  1 LIGHT  2 HEAVY  3 SPECIAL  0 THROW",{fontFamily:"monospace",fontSize:"13px",color:"#d0d8e6"}).setOrigin(0.5);
   this.keys=this.input.keyboard!.addKeys("A,D,W,S,F,G,H,J,R,LEFT,RIGHT,UP,DOWN,ONE,TWO,THREE,ZERO") as Record<string,Phaser.Input.Keyboard.Key>;
@@ -36,7 +36,7 @@ class FightScene extends Phaser.Scene{
   const torso=this.add.rectangle(0,-124,76,90,primary).setStrokeStyle(3,0xffffff,0.25);
   const head=this.add.circle(0,-192,31,0xe5bd9e).setStrokeStyle(4,dark);
   const arm=this.add.rectangle(49,-116,23,80,dark).setStrokeStyle(3,primary);
-  c.add([shadow,legs,torso,head,arm]);c.setDepth(5);return c;
+  c.add([shadow,legs,torso,head,arm]);c.setDepth(5);this.limbs.push({arm,legs,head});return c;
  }
  readInputs():readonly[FighterInput,FighterInput]{
   const a=neutral(),b=neutral(),k=this.keys;
@@ -50,7 +50,7 @@ class FightScene extends Phaser.Scene{
   const fighters=this.state.fighters;
   fighters.forEach((f:FighterState,i:number)=>{
    this.fighters[i].setPosition(WIDTH/2+f.x,FLOOR-f.y).setScale(f.facing===1?1:-1,1);
-   this.fighters[i].setAlpha(f.hitstopFrames>0?0.78:1);const pose=f.mode==="attack"?1.08:f.mode==="crouch"?0.72:f.mode==="knockdown"?0.42:1;this.fighters[i].setScale((f.facing===1?1:-1)*(f.mode==="attack"?1.08:1),pose);this.fighters[i].setAngle(f.mode==="knockdown"?(i===0?-55:55):0);
+   const limb=this.limbs[i];const motion=this.state.frame*0.16+i;const walking=f.mode==="walk";limb.legs.setAngle(walking?Math.sin(motion)*13:0);limb.arm.setAngle(f.mode==="attack"?-65:walking?Math.sin(motion+Math.PI)*14:0);limb.arm.x=f.mode==="attack"?75:49;limb.head.y=-192+(walking?Math.sin(motion*2)*3:0);\n   this.fighters[i].setAlpha(f.hitstopFrames>0?0.78:1);const pose=f.mode==="attack"?1.08:f.mode==="crouch"?0.72:f.mode==="knockdown"?0.42:1;this.fighters[i].setScale((f.facing===1?1:-1)*(f.mode==="attack"?1.08:1),pose);this.fighters[i].setAngle(f.mode==="knockdown"?(i===0?-55:55):0);
    this.bars[i].width=486*Math.max(0,Math.min(1,f.health/10000));
    this.meterBars[i].width=486*Math.max(0,Math.min(1,f.meter/1000));
    this.statuses[i].setText(f.mode.toUpperCase()+(f.attack?" · "+f.attack.moveId.toUpperCase():""));
