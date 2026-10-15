@@ -47,7 +47,9 @@ class FightScene extends Phaser.Scene{
   return[a,b];
  }
  update(_time:number,delta:number){
-  if(Phaser.Input.Keyboard.JustDown(this.keys.P)){this.paused=!this.paused;this.pauseText.setVisible(this.paused);this.accumulator=0;}\n  if(Phaser.Input.Keyboard.JustDown(this.keys.R)){this.state=createInitialState(20261003);this.accumulator=0;this.roundOver=false;this.paused=false;this.pauseText.setVisible(false);this.resultText.setText("");this.lastHealth=[10000,10000];this.tweens.killTweensOf(this.hitFlashes);for(const flash of this.hitFlashes)flash.setAlpha(0);}\n  if(this.paused)return;
+  if(Phaser.Input.Keyboard.JustDown(this.keys.P)){this.paused=!this.paused;this.pauseText.setVisible(this.paused);this.accumulator=0;}
+  if(Phaser.Input.Keyboard.JustDown(this.keys.R)){this.state=createInitialState(20261003);this.accumulator=0;this.roundOver=false;this.paused=false;this.pauseText.setVisible(false);this.resultText.setText("");this.lastHealth=[10000,10000];this.tweens.killTweensOf(this.hitFlashes);for(const flash of this.hitFlashes)flash.setAlpha(0);}
+  if(this.paused)return;
   this.accumulator=Math.min(this.accumulator+delta,250);
   let ticks=0;while(this.accumulator>=TICK_MS&&ticks<8){if(!this.roundOver)this.state=stepCombatMatch(this.state,this.readInputs());this.accumulator-=TICK_MS;ticks++;}
   const fighters=this.state.fighters;
